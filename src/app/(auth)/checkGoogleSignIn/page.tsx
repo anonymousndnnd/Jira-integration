@@ -6,6 +6,8 @@ import { createClient } from "@/app/utils/supabase/client";
 import axios from "axios";
 import { toast } from "sonner";
 
+// generating prisma 
+
 export default function AuthCallback() {
   const supabase = createClient();
   const router = useRouter();
