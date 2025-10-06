@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 const prisma=new PrismaClient()
-
+// try fixing in
 export async function POST(request:NextRequest) {
   try {
     const { supabaseId, email, username, role, organizationId } = await request.json();
