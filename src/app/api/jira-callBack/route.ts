@@ -5,7 +5,7 @@ import { createClient } from "@/app/utils/supabase/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma=new PrismaClient();
-const supabase = createClient();
+
 
 export async function GET(req: NextRequest) {
   try {
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     if (error || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const orgId=user.id
+    const orgId=user?.id
 
     const url = new URL(req.url);
     const code = url.searchParams.get("code");
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
         organizationId: orgId,
         accessToken: access_token,
         refreshToken: refresh_token,
-        tokenExpiresAt: expires_in,
+        tokenExpiresAt: new Date(Date.now() + expires_in * 1000),
       },
     });
 

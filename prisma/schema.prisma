@@ -48,7 +48,7 @@ model OrganizationJiraConnection {
   cloudId        String?
   tokenExpiresAt DateTime
   createdAt      DateTime     @default(now())
-  organizationId String       @unique @db.ObjectId
+  organizationId String       @unique 
   organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
