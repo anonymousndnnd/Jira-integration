@@ -4,6 +4,7 @@ import axios from "axios";
 import { createClient } from "@/app/utils/supabase/server";
 import { PrismaClient } from "@prisma/client";
 
+
 const prisma=new PrismaClient();
 // regenerating .next
 // fixing issues

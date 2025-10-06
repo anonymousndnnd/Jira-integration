@@ -1,8 +1,9 @@
 /* eslint-disable */
-import { PrismaClient } from "@prisma/client";
+
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/app/utils/supabase/server";
 import axios from "axios";
+import { PrismaClient } from "@prisma/client";
 
 const prisma=new PrismaClient();
 
