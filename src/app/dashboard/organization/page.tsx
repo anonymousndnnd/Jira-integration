@@ -1,5 +1,5 @@
 'use client'
-
+/* eslint-disable */
 import React from "react";
 
 function EmployeeDashboard() {

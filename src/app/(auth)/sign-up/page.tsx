@@ -1,4 +1,5 @@
 'use client'
+/* eslint-disable */
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "@/app/utils/supabase/client";

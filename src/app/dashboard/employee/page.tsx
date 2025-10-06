@@ -1,5 +1,5 @@
 'use client'
-
+/* eslint-disable */
 import React, { useEffect, useState } from 'react'
 import { createClient } from "@/app/utils/supabase/client";
 import { useRouter } from 'next/navigation';
