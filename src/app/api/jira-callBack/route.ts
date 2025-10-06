@@ -6,6 +6,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma=new PrismaClient();
 // regenerating .next
+// fixing issues
 
 export async function GET(req: NextRequest) {
   try {
