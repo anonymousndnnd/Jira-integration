@@ -1,0 +1,64 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ORGANIZATION
+  EMPLOYEE
+}
+
+model Organization {
+  id                         String                      @id @default(auto()) @map("_id") @db.ObjectId
+  email                      String                      @unique
+  username                   String
+  supabaseId                 String                      @unique
+  role                       Role                        @default(ORGANIZATION)
+  createdAt                  DateTime                    @default(now())
+  employees                  Employee[]
+  organizationJiraConnection OrganizationJiraConnection?
+}
+
+model Employee {
+  id                     String                  @id @default(auto()) @map("_id") @db.ObjectId
+  email                  String                  @unique
+  username               String
+  role                   Role                    @default(EMPLOYEE)
+  supabaseId             String                  @unique
+  organizationId         String                  @db.ObjectId
+  organization           Organization            @relation(fields: [organizationId], references: [id])
+  createdAt              DateTime                @default(now())
+  employeeJiraConnection EmployeeJiraConnection?
+}
+
+model OrganizationJiraConnection {
+  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  accessToken    String
+  refreshToken   String
+  cloudId        String?
+  tokenExpiresAt DateTime
+  createdAt      DateTime     @default(now())
+  organizationId String       @unique @db.ObjectId
+  organization   Organization @relation(fields: [organizationId], references: [id])
+}
+
+model EmployeeJiraConnection {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  accessToken    String
+  refreshToken   String
+  cloudId        String?
+  tokenExpiresAt DateTime
+  createdAt      DateTime @default(now())
+  employeeId     String   @unique @db.ObjectId
+  employee       Employee @relation(fields: [employeeId], references: [id])
+}
