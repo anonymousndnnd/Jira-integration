@@ -59,7 +59,7 @@ export default function SignInPage() {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/checkGoogleSignIn`, // redirect after success
+          redirectTo: `https://jira-integration-3cpe.vercel.app/checkGoogleSignIn`, // redirect after success
         },
       });
       if (error) throw error;
