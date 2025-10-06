@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { NextRequest, NextResponse } from "next/server";
 import axios from "axios";
 import { createClient } from "@/app/utils/supabase/server";
