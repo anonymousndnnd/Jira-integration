@@ -15,9 +15,9 @@ export async function GET(req: NextRequest) {
     const supabase =await createClient();
     const {data: { user },error} = await supabase.auth.getUser();
 
-    if (error || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    // if (error || !user) {
+    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // }
     const orgId=user?.id
 
     const url = new URL(req.url);
@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
 
     await prisma.organizationJiraConnection.create({
       data: {
-        organizationId: orgId,
+        organizationId: orgId!,
         accessToken: access_token,
         refreshToken: refresh_token,
         tokenExpiresAt: new Date(Date.now() + expires_in * 1000),
@@ -51,7 +51,19 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.redirect("/organization/dashboard");
   } catch (err: any) {
-    console.error("Jira OAuth error:", err.response?.data || err.message);
+    if (err.response) {
+    console.error("Jira OAuth error:", {
+      status: err.response.status,
+      data: err.response.data,
+      config: {
+        redirect_uri: process.env.ATLASSIAN_REDIRECT_URL,
+        client_id: process.env.JIRA_CLIENT_ID,
+      },
+    });
+    return NextResponse.json({ error: err.response.data }, { status: err.response.status });
+  } else {
+    console.error("General error:", err.message);
     return NextResponse.json({ error: err.message }, { status: 500 });
+  }
   }
 }
