@@ -13,44 +13,41 @@ export default function AuthCallback() {
   const router = useRouter();
 
   useEffect(() => {
-    const handleRedirect = async () => {
-      try {
-        const { data: { user }, error } = await supabase.auth.getUser();
-        console.log("user is:",user)
-        if (error || !user) {
-          toast.error("Authentication failed");
-          router.push("/sign-in");
-          return;
-        }
+  const handleRedirect = async () => {
+    try {
+      const { data: { session }, error } = await supabase.auth.getSession();
+      if (error || !session?.user) {
+        toast.error("Authentication failed");
+        router.push("/sign-in");
+        return;
+      }
 
-        const email = user.email;
+      const token = session.access_token;
 
-        const res = await axios.get("/api/verifyUser");
-        const existingUser = res.data?.user;
+      const res = await axios.get("/api/verifyUser", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-        if (existingUser) {
-          if (existingUser.role === "organization") {
-            router.replace("/dashboard/org");
-          } else {
-            router.replace("/dashboard/employee");
-          }
-        } 
-      } catch (err: any) {
-
-        if (err.response?.status === 404) {
-          // User not found → redirect to form to store email/name/role
-          console.log("error is right")
-          router.replace(`/listUser`);
-          console.log("success ho gaya")
+      const existingUser = res.data?.user;
+      if (existingUser) {
+        if (existingUser.role === "organization") {
+          router.replace("/dashboard/org");
         } else {
-          toast.error("Something went wrong");
-          router.push("/sign-in");
+          router.replace("/dashboard/employee");
         }
       }
-    };
+    } catch (err: any) {
+      if (err.response?.status === 404) {
+        router.replace(`/listUser`);
+      } else {
+        toast.error("Something went wrong");
+        router.push("/sign-in");
+      }
+    }
+  };
 
-    handleRedirect();
-  }, [router, supabase]);
+  handleRedirect();
+}, [router, supabase]);
 
   return (
     <div className="flex h-screen items-center justify-center">
