@@ -45,7 +45,7 @@ export default function SignUp() {
   const supabase = createClient();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [organizations, setOrganizations] = useState<{ id: string; username: string }[]>([]);
+  const [organizations, setOrganizations] = useState<{ id: string; username: string;supabaseId: string }[]>([]);
 
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
@@ -200,7 +200,7 @@ export default function SignUp() {
                       </SelectTrigger>
                       <SelectContent>
                         {organizations.map((org) => (
-                          <SelectItem key={org.id} value={org.id}>
+                          <SelectItem key={org.supabaseId} value={org.supabaseId}>
                             {org.username}
                           </SelectItem>
                         ))}

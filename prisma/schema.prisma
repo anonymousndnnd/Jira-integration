@@ -27,6 +27,7 @@ model Organization {
   createdAt                  DateTime                    @default(now())
   employees                  Employee[]
   organizationJiraConnection OrganizationJiraConnection?
+  organizationProject        OrganizationProject[]
 }
 
 model Employee {
@@ -35,10 +36,12 @@ model Employee {
   username               String
   role                   Role                    @default(EMPLOYEE)
   supabaseId             String                  @unique
-  organizationId         String                  @db.ObjectId
+  organizationId         String                  @unique
   organization           Organization            @relation(fields: [organizationId], references: [id])
   createdAt              DateTime                @default(now())
   employeeJiraConnection EmployeeJiraConnection?
+  employeeProject        EmployeeProject[]
+  projectAccessRequest   ProjectAccessRequest[]
 }
 
 model OrganizationJiraConnection {
@@ -48,17 +51,63 @@ model OrganizationJiraConnection {
   cloudId        String?
   tokenExpiresAt DateTime
   createdAt      DateTime     @default(now())
-  organizationId String       @unique 
+  organizationId String       @unique
   organization   Organization @relation(fields: [organizationId], references: [id])
 }
 
 model EmployeeJiraConnection {
-  id             String   @id @default(auto()) @map("_id") @db.ObjectId
-  accessToken    String
-  refreshToken   String
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  clientId       String
+  clientSecret   String
+  accessToken    String?
+  refreshToken   String?
   cloudId        String?
-  tokenExpiresAt DateTime
-  createdAt      DateTime @default(now())
-  employeeId     String   @unique @db.ObjectId
+  tokenExpiresAt DateTime?
+  createdAt      DateTime  @default(now())
+  employeeId     String    @unique
+  employee       Employee  @relation(fields: [employeeId], references: [id])
+}
+
+model OrganizationProject {
+  id                    String                 @id @default(auto()) @map("_id") @db.ObjectId
+  projectId             String                 @unique
+  key                   String
+  name                  String
+  description           String?
+  leadAccountId         String?
+  projectTypeKey        String?
+  url                   String?
+  avatarUrl             String?
+  organizationId        String                 @unique
+  organization          Organization           @relation(fields: [organizationId], references: [id])
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  projectAccessRequests ProjectAccessRequest[]
+}
+
+model EmployeeProject {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  projectId      String   @unique
+  key            String
+  name           String
+  description    String?
+  leadAccountId  String?
+  projectTypeKey String?
+  url            String?
+  avatarUrl      String?
+  employeeId     String   @unique
   employee       Employee @relation(fields: [employeeId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ProjectAccessRequest {
+  id         String              @id @default(auto()) @map("_id") @db.ObjectId
+  employeeId String              @unique
+  employee   Employee            @relation(fields: [employeeId], references: [id])
+  projectId  String              
+  organizationProject    OrganizationProject @relation(fields: [projectId], references: [id])
+  status     String              @default("IDLE")
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
 }

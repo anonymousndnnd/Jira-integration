@@ -106,7 +106,7 @@ export default function ListUser() {
       toast.success("User registered successfully!");
 
       if (data.role === "ORGANIZATION") {
-        router.push("/dashboard/org");
+        router.push("/dashboard/organization");
       } else {
         router.push("/dashboard/employee");
       }

@@ -30,7 +30,7 @@ export async function GET(request:NextRequest){
         "Authorization": `Basic ${authString}`,
       },
     });
-
+    console.log("Jira Response is:",jiraResponse.data)
     return NextResponse.json({ projects: jiraResponse.data });
   } catch (error: any) {
     console.error("Error fetching Jira data:", error.message);

@@ -31,7 +31,7 @@ export default function AuthCallback() {
       const existingUser = res.data?.user;
       if (existingUser) {
         if (existingUser.role === "organization") {
-          router.replace("/dashboard/org");
+          router.replace("/dashboard/organization");
         } else {
           router.replace("/dashboard/employee");
         }

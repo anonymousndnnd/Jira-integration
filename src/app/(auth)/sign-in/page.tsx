@@ -34,7 +34,7 @@ export default function SignInPage() {
     mode: "onChange",
     reValidateMode: "onChange"
   });
-
+   
   const onSubmit = async (data: z.infer<typeof signInSchema>) => {
     setIsSubmitting(true);
     try {
@@ -56,10 +56,12 @@ export default function SignInPage() {
   // 🔹 Google Sign-In handler
   const handleGoogleSignIn = async () => {
     try {
+      const baseUrl = window.location.origin; 
+      const redirectPath = "/checkGoogleSignIn";
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `https://jira-integration-3cpe.vercel.app/checkGoogleSignIn`, // redirect after success
+          redirectTo:`${baseUrl}${redirectPath}` 
         },
       });
       if (error) throw error;
